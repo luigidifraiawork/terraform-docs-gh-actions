@@ -108,24 +108,24 @@ update_doc() {
 
         echo "::debug config_file=${config_file}"
         exec_args+=(--config "${config_file}")
-    fi
+    else
+        if [ "${INPUT_OUTPUT_METHOD}" == "inject" ] || [ "${INPUT_OUTPUT_METHOD}" == "replace" ]; then
+            echo "::debug output_mode=${INPUT_OUTPUT_METHOD}"
+            exec_args+=(--output-mode "${INPUT_OUTPUT_METHOD}")
 
-    if [ "${INPUT_OUTPUT_METHOD}" == "inject" ] || [ "${INPUT_OUTPUT_METHOD}" == "replace" ]; then
-        echo "::debug output_mode=${INPUT_OUTPUT_METHOD}"
-        exec_args+=(--output-mode "${INPUT_OUTPUT_METHOD}")
+            echo "::debug output_file=${INPUT_OUTPUT_FILE}"
+            exec_args+=(--output-file "${INPUT_OUTPUT_FILE}")
+        fi
 
-        echo "::debug output_file=${INPUT_OUTPUT_FILE}"
-        exec_args+=(--output-file "${INPUT_OUTPUT_FILE}")
-    fi
+        if [ -n "${INPUT_TEMPLATE}" ]; then
+            exec_args+=(--output-template "${INPUT_TEMPLATE}")
+        fi
 
-    if [ -n "${INPUT_TEMPLATE}" ]; then
-        exec_args+=(--output-template "${INPUT_TEMPLATE}")
-    fi
-
-    if [ "${INPUT_RECURSIVE}" = "true" ]; then
-        if [ -n "${INPUT_RECURSIVE_PATH}" ]; then
-            exec_args+=(--recursive)
-            exec_args+=(--recursive-path "${INPUT_RECURSIVE_PATH}")
+        if [ "${INPUT_RECURSIVE}" = "true" ]; then
+            if [ -n "${INPUT_RECURSIVE_PATH}" ]; then
+                exec_args+=(--recursive)
+                exec_args+=(--recursive-path "${INPUT_RECURSIVE_PATH}")
+            fi
         fi
     fi
 
